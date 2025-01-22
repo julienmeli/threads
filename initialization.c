@@ -1,16 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   initialization.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmeli <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/22 08:08:40 by jmeli             #+#    #+#             */
+/*   Updated: 2025/01/22 14:41:30 by jmeli            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
 void	init_mutex(t_simulation *sim)
 {
-	sim->sim_mutex[3] = malloc(3 * sizeof(pthread_mutex_t));
-        if (!sim->sim_mutex)
-        {
-                error_message;
-                exit(1);
-        }
-	pthread_mutex_init(&sim->sim_mutex[0], NULL);
-	pthread_mutex_init(&sim->sim_mutex[1], NULL);
-	pthread_mutex_init(&sim->sim_mutex[2], NULL);
+	int	i;
+
+	i = 0;
+	while (i < NB_SIM_MUTEXES)
+	{
+		if ((pthread_mutex_init(&sim->sim_mutex[i], NULL)) != 0)
+		{
+			ft_putstr("Sim mutex initialization failed.\n");
+			exit(1);
+		}
+		i++;
+	}
 }
 
 void	init_philo_mutex(t_simulation *sim)
@@ -18,15 +33,13 @@ void	init_philo_mutex(t_simulation *sim)
 	int	i;
 
 	i = 0;
-	sim->philo_mutex = malloc(ft_atoi(argv[1]) * sizeof(pthread_mutex_t));
-	if (!sim->philo_mutex)
-	{
-		error_message;
-		exit(1);
-	}
 	while (i < sim->nb_philos)
 	{
-		pthread_mutex_init(&sim->philo_mutex[i], NULL);
+		if (pthread_mutex_init(&sim->philo_mutex[i], NULL) != 0)
+		{
+			ft_putstr("Philo mutex initialization failed.\n");
+                        exit(1);
+		}
 		i++;
 	}
 }
@@ -35,17 +48,17 @@ void	init_philosophers(t_simulation *sim)
 {
 	int	i;
 
-	sim->philosopher = malloc(nb_philos * sizeof(t_philosopher));
+	sim->philosopher = malloc(sim->nb_philos * sizeof(t_philosopher));
 	if (!sim->philosopher)
 	{
-		error_message;
+		ft_putstr("Philosopher memory allocation failed.\n");
 		exit(1);
 	}
 	i = 0;
 	while (i < sim->nb_philos)
 	{
 		sim->philosopher[i].sim = sim;
-		sim->philosopher[i].id = id + 1;
+		sim->philosopher[i].id = i + 1;
 		sim->philosopher[i].meals_eaten = 0;
 		sim->philosopher[i].time_of_last_meal = sim->start_time;
 		sim->philosopher[i].left_fork = &sim->philo_mutex[i];
@@ -53,19 +66,27 @@ void	init_philosophers(t_simulation *sim)
 			sim->philosopher[i].right_fork = &sim->philo_mutex[sim->nb_philos - 1];
 		else
 			sim->philosopher[i].right_fork = &sim->philo_mutex[i - 1];
+		//printf("i:%d meals eaten:%d\n", i, sim->philosopher[i].meals_eaten);
+		i++;
 	}
 }
 
 void	ft_init_simulation(t_simulation *sim, int argc, char **argv)
 {
 	struct timeval	initial_time;
-
+	
+	(void)argc;
 	sim->nb_philos = ft_atoi(argv[1]);
 	sim->time_to_die = ft_atoi(argv[2]);
 	sim->time_to_eat = ft_atoi(argv[3]);
 	sim->time_to_sleep = ft_atoi(argv[4]);
+	if (argv[5])
+		sim->nb_meals = ft_atoi(argv[5]);
+	else
+		sim->nb_meals = 2147483647;
 	gettimeofday(&initial_time, NULL);
-	sim->start_time = initial_time.tv_sec * 1000000 + initial_time.tv_usec;
+	sim->start_time = initial_time.tv_sec * 1000 + initial_time.tv_usec / 1000;
+	printf("start_time:%ld\n", sim->start_time);
 	init_mutex(sim);
 	init_philo_mutex(sim);
 	init_philosophers(sim);
