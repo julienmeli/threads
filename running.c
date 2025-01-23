@@ -19,6 +19,8 @@ int	check_hunger(t_philosopher *philosopher)
 	
 	gettimeofday(&current_time, NULL);
 	now = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+	now = now - philosopher->sim->start_time;
+	printf("In check_hunger, now: %ld time of last meal: %ld time to die: %d\n", now, philosopher->time_of_last_meal, philosopher->sim->time_to_die);
 	if ((now - philosopher->time_of_last_meal * 1000) >= philosopher->sim->time_to_die * 1000)
 	{
 		ft_log(now, philosopher, "has died.");
@@ -29,6 +31,7 @@ int	check_hunger(t_philosopher *philosopher)
 
 int	check_meals(t_philosopher *philosopher)
 {
+	printf("id: %d, meals_eatern: %d, nb_meals: %d\n", philosopher->id, philosopher->meals_eaten, philosopher->sim->nb_meals);
 	if (philosopher->meals_eaten >= philosopher->sim->nb_meals)
 	{
 		exit(0);
@@ -43,7 +46,7 @@ void	*eat_prey_love(void *arg)
 	ptr = (t_philosopher *)arg;
 	//puts("check eat prey love");
 	//printf("check_meals%d check_hunger%d\n", check_meals(ptr), check_hunger(ptr));
-	if (check_meals(ptr) && check_hunger(ptr))
+	while (check_meals(ptr) && check_hunger(ptr))
 	{
 		//printf("Before take_forks %d\n", ptr->id);
 		take_forks(ptr);
@@ -65,7 +68,10 @@ void    create_philo_threads(t_simulation *sim)
         while (i < sim->nb_philos)
         {
                 pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love, &sim->philosopher[i]);
-		//usleep(1000);
+		/*if (philosopher[i].id % 2 == 1)
+		{
+			usleep(1000);
+		}*/
                 //printf("nb_philos:%d i:%d\n", sim->nb_philos, i);
 		i++;
         }

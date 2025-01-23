@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-#define NB_SIM_MUTEXES 1
+#define NB_SIM_MUTEXES 2
 
 typedef struct  s_philosopher
 {

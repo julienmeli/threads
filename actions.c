@@ -17,11 +17,11 @@ void	take_forks(t_philosopher *philo)
 	struct timeval	current_time;
 	long int	fork_time;
 
-	pthread_mutex_lock(philo->right_fork);
 	if (philo->id % 2 == 1)
 		usleep(2000);
 	else
-		usleep(1000);	
+		usleep(1000);
+	pthread_mutex_lock(philo->right_fork);	
 	gettimeofday(&current_time, NULL);
         fork_time = current_time.tv_sec * 1000 + current_time.tv_usec/1000;
 	printf("fork_time: %ld start_time: %ld\n", fork_time, philo->sim->start_time);
