@@ -21,7 +21,7 @@ int	check_hunger(t_philosopher *philosopher)
 	now = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 	now = now - philosopher->sim->start_time;
 	printf("In check_hunger, now: %ld time of last meal: %ld time to die: %d\n", now, philosopher->time_of_last_meal, philosopher->sim->time_to_die);
-	if ((now - philosopher->time_of_last_meal * 1000) >= philosopher->sim->time_to_die * 1000)
+	if ((now * 1000 - philosopher->time_of_last_meal * 1000) >= philosopher->sim->time_to_die * 1000)
 	{
 		ft_log(now, philosopher, "has died.");
 		exit(0);
