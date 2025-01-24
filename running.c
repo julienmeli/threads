@@ -25,7 +25,9 @@ int	check_hunger(t_philosopher *philosopher)
 	if ((now * 1000 - philosopher->time_of_last_meal * 1000) >= philosopher->sim->time_to_die * 1000)
 	{
 		ft_log(now, philosopher, "has died.");
+		pthread_mutex_lock(&philosopher->sim->sim_mutex[OFF]);
 		philosopher->sim->sim_on_off = 0;
+		pthread_mutex_unlock(&philosopher->sim->sim_mutex[OFF]);
 		pthread_mutex_unlock(&philosopher->sim->sim_mutex[HUNGER]);
 		//ft_clean_simulation(philosopher->sim);
 		return (0);
@@ -41,7 +43,9 @@ int	check_meals(t_philosopher *philosopher)
 	if (philosopher->meals_eaten >= philosopher->sim->nb_meals)
 	{
 		//ft_clean_simulation(philosopher->sim);
+		pthread_mutex_lock(&philosopher->sim->sim_mutex[OFF]);
 		philosopher->sim->sim_on_off = 0;
+		pthread_mutex_unlock(&philosopher->sim->sim_mutex[OFF]);
 		pthread_mutex_unlock(&philosopher->sim->sim_mutex[MEALS]);
 		return (0);
 	}
@@ -53,7 +57,9 @@ void	doublecheck(t_philosopher *philosopher)
 {
 	if (!check_meals(philosopher) || !check_hunger(philosopher))
 	{
+		pthread_mutex_lock(&philosopher->sim->sim_mutex[OFF]);
 		philosopher->sim->sim_on_off = 0;
+		pthread_mutex_unlock(&philosopher->sim->sim_mutex[OFF]);
 	}
 }
 
@@ -68,24 +74,24 @@ void	*eat_prey_love(void *arg)
 	{
 		//printf("Before take_forks %d\n", ptr->id);
 		//doublecheck(ptr);
-		if (ptr->sim->sim_on_off == 0)
+		if (simonoff(ptr) == 0)
 			break;
 		take_forks(ptr);
-		if (ptr->sim->sim_on_off == 0)
+		if (simonoff(ptr) == 0)
                         break;
 		//printf("after take_forks %d\n", ptr->id);
 		eat(ptr);
-		if (ptr->sim->sim_on_off == 0)
+		if (simonoff(ptr) == 0)
                         break;
 		//puts("checking");
 		release_forks(ptr);
-		if (ptr->sim->sim_on_off == 0)
+		if (simonoff(ptr) == 0)
                         break;
 		nap(ptr);
-		if (ptr->sim->sim_on_off == 0)
+		if (simonoff(ptr) == 0)
                         break;
 		think(ptr);
-		if (ptr->sim->sim_on_off == 0)
+		if (simonoff(ptr) == 0)
                         break;
 		//printf("id: %d nb of meals: %d\n", ptr->id, ptr->meals_eaten);
 	}

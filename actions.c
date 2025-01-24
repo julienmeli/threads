@@ -18,8 +18,13 @@ void	take_forks(t_philosopher *philo)
 	long int	fork_time;
 
 	if (philo->id % 2 == 1)
-		usleep(8000);
+	{
+		pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
+		usleep(1000);
+		pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
+	}
 	pthread_mutex_lock(philo->right_fork);	
+	philo->right_hand = 1;
 	gettimeofday(&current_time, NULL);
         fork_time = current_time.tv_sec * 1000 + current_time.tv_usec/1000;
 	//printf("fork_time: %ld start_time: %ld\n", fork_time, philo->sim->start_time);
@@ -29,17 +34,22 @@ void	take_forks(t_philosopher *philo)
 	ft_log(fork_time, philo, "has taken a fork.");
 	if (philo->sim->nb_philos == 1)
 	{
+		pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
 		usleep(philo->sim->time_to_die * 1000);
+		pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
 		gettimeofday(&current_time, NULL);
 		fork_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
         	fork_time = fork_time - philo->sim->start_time;
 		ft_log(fork_time, philo, "died.");
 		pthread_mutex_unlock(philo->right_fork);
 		//ft_clean_simulation(philo->sim);
+		pthread_mutex_lock(&philo->sim->sim_mutex[OFF]);
 		philo->sim->sim_on_off = 0;
+		pthread_mutex_unlock(&philo->sim->sim_mutex[OFF]);
 		return ;
 	}
 	pthread_mutex_lock(philo->left_fork);
+	philo->left_hand = 1;
 	gettimeofday(&current_time, NULL);
         fork_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
         fork_time = fork_time - philo->sim->start_time;
@@ -68,19 +78,34 @@ void	eat(t_philosopher *philo)
 	printf("time to die:%d time to eat:%d\n", philo->sim->time_to_die, philo->sim->time_to_eat);
 	if (philo->sim->time_to_die < philo->sim->time_to_eat)
 	{
+		printf("get here? id: %d\n", philo->id);
+		pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
 		usleep(philo->sim->time_to_die * 1000);
+		pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
 		if (sudden_death(philo))
                 	return ;
 	}
 	if (philo->sim->sim_on_off == 1)
+	{
+		pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
 		usleep(philo->sim->time_to_eat * 1000);
+		pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
+	}
 	//puts("check ?");
 }
 
 void	release_forks(t_philosopher *philo)
 {
-	pthread_mutex_unlock(philo->right_fork);
-        pthread_mutex_unlock(philo->left_fork);
+	if (philo->right_hand == 1)
+	{
+		pthread_mutex_unlock(philo->right_fork);
+		philo->right_hand = 0;
+	}
+        if (philo->left_hand == 1)
+	{
+		pthread_mutex_unlock(philo->left_fork);
+		philo->left_hand = 0;
+	}
 }
 
 void	nap(t_philosopher *philo)
@@ -95,7 +120,9 @@ void	nap(t_philosopher *philo)
 	if (sudden_death(philo))
                 return ;
 	ft_log(sleep_time, philo, " is sleeping.");
+	pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
 	usleep(philo->sim->time_to_sleep * 1000);
+	pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
 }
 
 void	think(t_philosopher *philo)
@@ -110,5 +137,7 @@ void	think(t_philosopher *philo)
 	if (sudden_death(philo))
                 return ;
 	ft_log(think_time, philo, " is thinking.");
+	pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
         usleep(philo->sim->time_to_sleep * 1000);
+	pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
 }

@@ -8,12 +8,14 @@
 
 #include <stdio.h>
 
-#define NB_SIM_MUTEXES 2
+#define NB_SIM_MUTEXES 4
 
 typedef enum	t_sim_mutexes
 {
 	HUNGER,
-	MEALS
+	MEALS,
+	TIME,
+	OFF
 }		t_sim_mutexes;
 
 typedef struct  s_philosopher
@@ -24,7 +26,9 @@ typedef struct  s_philosopher
         long int        time_of_last_meal;
         pthread_t       thread;
         pthread_mutex_t *left_fork;
+	int		left_hand;
         pthread_mutex_t *right_fork;
+	int		right_hand;
 }               t_philosopher;
 
 typedef struct	s_simulation
@@ -55,6 +59,7 @@ int     ft_arguments(int argc, char **argv);
 //diary.c
 void    ft_putstr(char *str);
 void    ft_putnbr(unsigned long int nb);
+int     simonoff(t_philosopher *philo);
 int     sudden_death(t_philosopher *philo);
 void    ft_log(long int time, t_philosopher *philo, char *str);
 

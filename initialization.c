@@ -69,6 +69,8 @@ void	init_philosophers(t_simulation *sim)
 		sim->philosopher[i].id = i + 1;
 		sim->philosopher[i].meals_eaten = 0;
 		sim->philosopher[i].time_of_last_meal = sim->start_time;
+		sim->philosopher[i].left_hand = 0;
+		sim->philosopher[i].right_hand = 0;
 		sim->philosopher[i].left_fork = &sim->philo_mutex[i];
 		if (i == 0)
 			sim->philosopher[i].right_fork = &sim->philo_mutex[sim->nb_philos - 1];
