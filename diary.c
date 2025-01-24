@@ -85,9 +85,9 @@ int	sudden_death(t_philosopher *philo)
 
 void	ft_log(long int time, t_philosopher *philo, char *str)
 {
-	pthread_mutex_lock(&philo->sim->sim_mutex[0]);
+	pthread_mutex_lock(&philo->sim->sim_mutex[LOG]);
 	//if (philo->sim->sim_on_off == 1)
 	if (simonoff(philo))
 		printf("%ld %d %s\n", time, philo->id, str);
-	pthread_mutex_unlock(&philo->sim->sim_mutex[0]);
+	pthread_mutex_unlock(&philo->sim->sim_mutex[LOG]);
 }

@@ -8,14 +8,15 @@
 
 #include <stdio.h>
 
-#define NB_SIM_MUTEXES 4
+#define NB_SIM_MUTEXES 5
 
 typedef enum	t_sim_mutexes
 {
 	HUNGER,
 	MEALS,
 	TIME,
-	OFF
+	OFF,
+	LOG
 }		t_sim_mutexes;
 
 typedef struct  s_philosopher
