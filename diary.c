@@ -36,6 +36,24 @@ void	ft_putnbr(unsigned long int nb)
 	ft_putchar(nb % 10 + '0');
 }
 
+int	sudden_death(t_philosopher *philo)
+{
+	struct timeval  current_time;
+        long int        check_time;
+
+	gettimeofday(&current_time, NULL);
+        check_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+        check_time = check_time - philo->sim->start_time;
+	if ((check_time - philo->time_of_last_meal) > philo->sim->time_to_die)
+	{
+		philo->sim->sim_on_off = 0;
+		ft_log(check_time, philo, "died.");
+		return (1);
+	}
+	else
+		return (0);
+}
+
 void	ft_log(long int time, t_philosopher *philo, char *str)
 {
 	pthread_mutex_lock(&philo->sim->sim_mutex[0]);

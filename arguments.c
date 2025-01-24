@@ -75,7 +75,7 @@ int	ft_arguments(int argc, char **argv)
 	}
 	else
 		return (0);
-	puts("chekeiros");
+	//puts("chekeiros");
 	if (ft_atoi(argv[1]) == 0)
 	{
 		return (0);

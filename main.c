@@ -22,6 +22,15 @@ void	ft_clean_simulation(t_simulation *sim)
                 pthread_mutex_destroy(&sim->sim_mutex[i]);
                 i++;
         }
+	//puts("hello");
+	i = 0;
+	while (i < sim->nb_philos)
+	{
+		pthread_mutex_destroy(&sim->philo_mutex[i]);
+		//pthread_detach(sim->philosopher[i].thread);
+		i++;
+	}	
+	free(sim->philo_mutex);
 	free(sim->philosopher);
 	//free(sim);
 }
@@ -37,6 +46,12 @@ int	main(int argc, char **argv)
 {
 	t_simulation	sim;
 	
+	/*sim = malloc(sizeof(t_simulation));
+	if (!sim)
+	{
+		printf("MEMPRY ALLOCATION SHIT.");
+		return (1);
+	}*/
 	if (ft_arguments(argc, argv) == 0)
         {
 		ft_putstr("Usage:\n");
@@ -45,9 +60,10 @@ int	main(int argc, char **argv)
 		return (1);
         }
 	ft_init_simulation(&sim, argc, argv);
-	printf("After initialization:%d\n", sim.nb_philos);
+	//printf("After initialization:%d\n", sim.nb_philos);
 	ft_run_simulation(&sim);
-	puts("Here, already?");
+	//puts("Here, already?");
 	ft_clean_simulation(&sim);
+	//free(sim);
 	return (0);
 }

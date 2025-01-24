@@ -10,6 +10,12 @@
 
 #define NB_SIM_MUTEXES 2
 
+typedef enum	t_sim_mutexes
+{
+	HUNGER,
+	MEALS
+}		t_sim_mutexes;
+
 typedef struct  s_philosopher
 {
         struct s_simulation     *sim;
@@ -28,6 +34,7 @@ typedef struct	s_simulation
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	nb_meals;
+	int	sim_on_off;
 	long int	start_time;
 	pthread_mutex_t	*philo_mutex;
 	t_philosopher	*philosopher;
@@ -48,6 +55,7 @@ int     ft_arguments(int argc, char **argv);
 //diary.c
 void    ft_putstr(char *str);
 void    ft_putnbr(unsigned long int nb);
+int     sudden_death(t_philosopher *philo);
 void    ft_log(long int time, t_philosopher *philo, char *str);
 
 //initialization.c
@@ -57,6 +65,7 @@ void    ft_init_simulation(t_simulation *sim, int argc, char **argv);
 void    ft_clean_simulation(t_simulation *sim);
 
 //running.c
+int     check_hunger(t_philosopher *philosopher);
 int     check_meals(t_philosopher *philosopher);
 void    ft_run_simulation(t_simulation *sim);
 

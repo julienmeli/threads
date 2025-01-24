@@ -24,7 +24,7 @@ void	init_mutex(t_simulation *sim)
 			ft_putstr("Sim mutex initialization failed.\n");
 			exit(1);
 		}
-		printf("Loop in init_mutex %d\n", i);
+		//printf("Loop in init_mutex %d\n", i);
 		i++;
 	}
 }
@@ -36,17 +36,18 @@ void	init_philo_mutex(t_simulation *sim)
 
 	ret = 0;
 	i = 0;
-	printf("Beginning of init_philo_mutex i:%d, nb of philos: %d\n", i, sim->nb_philos);
 	sim->philo_mutex = malloc(sim->nb_philos * sizeof(pthread_mutex_t));
+	//printf("Beginning of init_philo_mutex i:%d, nb of philos: %d\n", i, sim->nb_philos);
 	while (i < sim->nb_philos)
 	{
+		
 		ret = pthread_mutex_init(&sim->philo_mutex[i], NULL);
 		if (ret != 0)
 		{
 			ft_putstr("Philo mutex initialization failed.\n");
                         exit(1);
 		}
-		printf("Loop in init_philo_mutex %d\n", i);
+		//printf("Loop in init_philo_mutex %d\n", i);
 		i++;
 	}
 }
@@ -91,12 +92,13 @@ void	ft_init_simulation(t_simulation *sim, int argc, char **argv)
 		sim->nb_meals = ft_atoi(argv[5]);
 	else
 		sim->nb_meals = 2147483647;
+	sim->sim_on_off = 1;
 	gettimeofday(&initial_time, NULL);
 	sim->start_time = initial_time.tv_sec * 1000 + initial_time.tv_usec / 1000;
-	printf("start_time:%ld\n", sim->start_time);
+	//printf("start_time:%ld\n", sim->start_time);
 	init_mutex(sim);
-	puts("After init_mutex");
+	//puts("After init_mutex");
 	init_philo_mutex(sim);
-	puts("After init_philo_mutex");
+	//puts("After init_philo_mutex");
 	init_philosophers(sim);
 }
