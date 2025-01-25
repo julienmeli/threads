@@ -12,19 +12,25 @@
 
 #include "philosophers.h"
 
+int	check_left_fork(t_philosopher *philo)
+{
+	int	neighbor_id;
+
+	if (philo->id == philo->sim->nb_philos)
+		neighbor_id = 1;
+       	else
+		neighbor_id = philo->id + 1;
+	if (philo->sim->philosopher[neighbor_id - 1].right_hand == 1)
+		return (0);
+	else
+		return (1);
+}
+
 void	take_forks(t_philosopher *philo)
 {
 	struct timeval	current_time;
 	long int	fork_time;
 	
-	/*
-	if (philo->id % 2 == 1)
-	{
-		pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
-		usleep(1000);
-		pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
-	}
-	*/
 	pthread_mutex_lock(philo->right_fork);	
 	philo->right_hand = 1;
 	gettimeofday(&current_time, NULL);
@@ -33,6 +39,7 @@ void	take_forks(t_philosopher *philo)
         fork_time = fork_time - philo->sim->start_time;
 	if (sudden_death(philo) || philo->sim->sim_on_off == 0)
 		return ;
+	usleep(1);
 	ft_log(fork_time, philo, "has taken a fork.");
 	if (philo->sim->nb_philos == 1)
 	{
@@ -50,6 +57,10 @@ void	take_forks(t_philosopher *philo)
 		release_all_forks(philo->sim);
 		pthread_mutex_unlock(&philo->sim->sim_mutex[OFF]);
 		return ;
+	}
+	while (!check_left_fork(philo))
+	{
+                sudden_death(philo);
 	}
 	pthread_mutex_lock(philo->left_fork);
 	philo->left_hand = 1;
@@ -78,10 +89,10 @@ void	eat(t_philosopher *philo)
 	//puts("post check");
 	check_meals(philo);
 	//puts("last check");
-	printf("time to die:%d time to eat:%d\n", philo->sim->time_to_die, philo->sim->time_to_eat);
+	//printf("time to die:%d time to eat:%d\n", philo->sim->time_to_die, philo->sim->time_to_eat);
 	if (philo->sim->time_to_die < philo->sim->time_to_eat)
 	{
-		printf("get here? id: %d\n", philo->id);
+		//printf("get here? id: %d\n", philo->id);
 		//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
 		usleep(philo->sim->time_to_die * 1000);
 		//pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
@@ -111,10 +122,36 @@ void	release_forks(t_philosopher *philo)
 	}
 }
 
+/*
+//Below function to copy and paste in a separate file
+void	death_becomes_her(t_philosopher *philo)
+{
+	struct timeval	current_time;
+	long int	now_time;
+	long int	countdown;
+	if (philo->sim->time_to_sleep + philo->sim->time_to_eat > philo->sim->time_to_die)
+	{
+		gettimeofday(&current_time, NULL);
+        	now_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+        	now_time = now_time - philo->time_of_last_meal;
+		countdown = philo->sim->time_to_die * 1000 + philo->time_of_last_meal;
+		printf("countdown: %ld\n", countdown);
+		while (now_time < countdown)
+		{
+			gettimeofday(&current_time, NULL);
+                	now_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+                	now_time = now_time - philo->time_of_last_meal;
+		}
+		sudden_death(philo);
+	}
+}
+*/
+
 void	nap(t_philosopher *philo)
 {
 	struct timeval current_time;
 	long int	sleep_time;
+	int		sand;
 
 	gettimeofday(&current_time, NULL);
 	sleep_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
@@ -122,9 +159,17 @@ void	nap(t_philosopher *philo)
 	sleep_time = sleep_time - philo->sim->start_time;
 	if (sudden_death(philo) || philo->sim->sim_on_off == 0)
                 return ;
+	usleep(1);
 	ft_log(sleep_time, philo, " is sleeping.");
+	//death_becomes_her(philo);
 	//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
-	usleep(philo->sim->time_to_sleep * 1000);
+	sand = 0;
+	while (sand <= philo->sim->time_to_sleep)
+	{
+		usleep(1000);
+		sudden_death(philo);
+		sand = sand + 1;
+	}
 	//pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
 }
 

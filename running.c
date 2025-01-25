@@ -41,7 +41,7 @@ int	check_meals(t_philosopher *philosopher)
 {
 	//printf("id: %d, meals_eatern: %d, nb_meals: %d\n", philosopher->id, philosopher->meals_eaten, philosopher->sim->nb_meals);
 	pthread_mutex_lock(&philosopher->sim->sim_mutex[MEALS]);
-	if (philosopher->meals_eaten >= philosopher->sim->nb_meals)
+	if ((philosopher->sim->nb_meals > 0) && (philosopher->meals_eaten >= philosopher->sim->nb_meals))
 	{
 		//ft_clean_simulation(philosopher->sim);
 		pthread_mutex_lock(&philosopher->sim->sim_mutex[OFF]);
@@ -115,6 +115,7 @@ void	*eat_prey_love_odd(void *arg)
 	return (NULL);
 }
 
+/*
 void    create_philo_threads(t_simulation *sim)
 {
         int     i;
@@ -127,21 +128,26 @@ void    create_philo_threads(t_simulation *sim)
 			pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love_odd, &sim->philosopher[i]);
 		else
 			pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love, &sim->philosopher[i]);
-		/*if (philosopher[i].id % 2 == 1)
-		{
-			usleep(1000);
-		}*/
-                //printf("nb_philos:%d i:%d\n", sim->nb_philos, i);
 		i++;
         }
 	//puts("end of create philo threads");
 }
+*/
 
 void	ft_run_simulation(t_simulation *sim)
 {
 	int	i;
 
-	create_philo_threads(sim);
+	//create_philo_threads(sim);
+	i = 0;
+        while (i < sim->nb_philos)
+        {
+                if (sim->philosopher[i].id % 2 == 1)
+                        pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love_odd, &sim->philosopher[i]);
+                else
+                        pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love, &sim->philosopher[i]);
+                i++;
+        }
 	i = 0;
 	while (i < sim->nb_philos)
         {

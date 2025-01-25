@@ -12,6 +12,7 @@
 
 #include "philosophers.h"
 
+/*
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
@@ -35,6 +36,7 @@ void	ft_putnbr(unsigned long int nb)
 		ft_putnbr(nb / 10);
 	ft_putchar(nb % 10 + '0');
 }
+*/
 
 int	simonoff(t_philosopher *philo)
 {
@@ -67,16 +69,16 @@ int	sudden_death(t_philosopher *philo)
 	gettimeofday(&current_time, NULL);
         check_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
         check_time = check_time - philo->sim->start_time;
-	printf("id %d check_time: %ld time of last meal: %ld time to die: %d\n", philo->id, check_time, philo->time_of_last_meal, philo->sim->time_to_die);
+	//printf("id %d check_time: %ld time of last meal: %ld time to die: %d\n", philo->id, check_time, philo->time_of_last_meal, philo->sim->time_to_die);
 	if ((check_time - philo->time_of_last_meal) > philo->sim->time_to_die)
 	{
 		release_forks(philo);
-		printf("here? id: %d\n", philo->id);
+		//printf("here? id: %d\n", philo->id);
 		ft_log(check_time, philo, "died.");
 		pthread_mutex_lock(&philo->sim->sim_mutex[OFF]);
 		philo->sim->sim_on_off = 0;
 		release_all_forks(philo->sim);
-		puts("bloque?");
+		//puts("bloque?");
 		pthread_mutex_unlock(&philo->sim->sim_mutex[OFF]);
 		return (1);
 	}
