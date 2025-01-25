@@ -61,6 +61,7 @@ int     ft_arguments(int argc, char **argv);
 void    ft_putstr(char *str);
 void    ft_putnbr(unsigned long int nb);
 int     simonoff(t_philosopher *philo);
+void    release_all_forks(t_simulation *sim);
 int     sudden_death(t_philosopher *philo);
 void    ft_log(long int time, t_philosopher *philo, char *str);
 

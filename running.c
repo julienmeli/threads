@@ -27,6 +27,7 @@ int	check_hunger(t_philosopher *philosopher)
 		ft_log(now, philosopher, "has died.");
 		pthread_mutex_lock(&philosopher->sim->sim_mutex[OFF]);
 		philosopher->sim->sim_on_off = 0;
+		release_all_forks(philosopher->sim);
 		pthread_mutex_unlock(&philosopher->sim->sim_mutex[OFF]);
 		pthread_mutex_unlock(&philosopher->sim->sim_mutex[HUNGER]);
 		//ft_clean_simulation(philosopher->sim);
@@ -52,7 +53,7 @@ int	check_meals(t_philosopher *philosopher)
 	pthread_mutex_unlock(&philosopher->sim->sim_mutex[MEALS]);
 	return (1);
 }
-
+/*
 void	doublecheck(t_philosopher *philosopher)
 {
 	if (!check_meals(philosopher) || !check_hunger(philosopher))
@@ -62,7 +63,7 @@ void	doublecheck(t_philosopher *philosopher)
 		pthread_mutex_unlock(&philosopher->sim->sim_mutex[OFF]);
 	}
 }
-
+*/
 void	*eat_prey_love(void *arg)
 {
 	t_philosopher	*ptr;
@@ -99,6 +100,21 @@ void	*eat_prey_love(void *arg)
 	return (NULL);
 }
 
+void	*eat_prey_love_odd(void *arg)
+{
+	t_philosopher	*ptr;
+
+	ptr = (t_philosopher *)arg;
+	while (check_meals(ptr) && check_hunger(ptr) && ptr->sim->sim_on_off == 1)
+	{
+		if (simonoff(ptr) == 0)
+			break;
+		nap(ptr);
+		eat_prey_love(ptr);
+	}
+	return (NULL);
+}
+
 void    create_philo_threads(t_simulation *sim)
 {
         int     i;
@@ -107,7 +123,10 @@ void    create_philo_threads(t_simulation *sim)
 	//printf("check: %d\n", sim->philosopher[8].id);
         while (i < sim->nb_philos)
         {
-                pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love, &sim->philosopher[i]);
+                if (sim->philosopher[i].id % 2 == 1)
+			pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love_odd, &sim->philosopher[i]);
+		else
+			pthread_create(&sim->philosopher[i].thread, NULL, &eat_prey_love, &sim->philosopher[i]);
 		/*if (philosopher[i].id % 2 == 1)
 		{
 			usleep(1000);

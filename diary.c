@@ -67,6 +67,7 @@ int	sudden_death(t_philosopher *philo)
 	gettimeofday(&current_time, NULL);
         check_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
         check_time = check_time - philo->sim->start_time;
+	printf("id %d check_time: %ld time of last meal: %ld time to die: %d\n", philo->id, check_time, philo->time_of_last_meal, philo->sim->time_to_die);
 	if ((check_time - philo->time_of_last_meal) > philo->sim->time_to_die)
 	{
 		release_forks(philo);

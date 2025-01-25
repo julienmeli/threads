@@ -22,41 +22,30 @@ void	ft_clean_simulation(t_simulation *sim)
                 pthread_mutex_destroy(&sim->sim_mutex[i]);
                 i++;
         }
-	//puts("hello");
 	i = 0;
 	while (i < sim->nb_philos)
 	{
 		pthread_mutex_destroy(&sim->philo_mutex[i]);
-		//pthread_detach(sim->philosopher[i].thread);
 		i++;
 	}	
 	free(sim->philo_mutex);
 	free(sim->philosopher);
-	//free(sim);
 }
 
 void	instructions(void)
 {
-	ft_putstr("Usage:\n");
-	ft_putstr("./philo <nb_of_guys> <time_to_die (ms)> <to_eat (ms)> <to_sleep (ms)> <nb_of_meals>\n");
-	ft_putstr("Nbs of philos and meals must be > 0. Negative time? Ah ah!\n");
+	printf("Usage:\n");
+	printf("./philo <nb_of_guys> <time_to_die (ms)> <to_eat (ms)> <to_sleep (ms)> <nb_of_meals>\n");
+	printf("Nbs of philos and meals must be > 0. Negative time? Ah ah!\n");
 }
 
 int	main(int argc, char **argv)
 {
 	t_simulation	sim;
 	
-	/*sim = malloc(sizeof(t_simulation));
-	if (!sim)
-	{
-		printf("MEMPRY ALLOCATION SHIT.");
-		return (1);
-	}*/
 	if (ft_arguments(argc, argv) == 0)
         {
-		ft_putstr("Usage:\n");
-	       	ft_putstr("./philo <nb_of_guys> <time_to_die (ms)> <to_eat (ms)> <to_sleep (ms)> <nb_of_meals>\n");
-        	ft_putstr("Nbs of philos and meals must be > 0.\nNegative time? Ah ah!\n");
+		instructions();
 		return (1);
         }
 	ft_init_simulation(&sim, argc, argv);
