@@ -60,7 +60,12 @@ void	take_forks(t_philosopher *philo)
 	}
 	while (!check_left_fork(philo))
 	{
-                sudden_death(philo);
+                //petit check pour ./philo 6 101 46 47 5
+		//if (philo->id == 5)
+		//	puts("fivoe");
+		//2025-01-27 rajout du if et du sim_on_off == 0
+		if (sudden_death(philo) || philo->sim->sim_on_off == 0)
+			return ;
 	}
 	pthread_mutex_lock(philo->left_fork);
 	philo->left_hand = 1;
@@ -169,7 +174,9 @@ void	nap(t_philosopher *philo)
 		while (sand <= philo->sim->time_to_sleep)
 		{
 			usleep(1000);
-			sudden_death(philo);
+			//2025-01-27 if et break
+			if (sudden_death(philo))
+				break ;
 			sand = sand + 1;
 		}
 	}

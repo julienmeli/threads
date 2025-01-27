@@ -46,6 +46,7 @@ int	check_meals(t_philosopher *philosopher)
 		//ft_clean_simulation(philosopher->sim);
 		pthread_mutex_lock(&philosopher->sim->sim_mutex[OFF]);
 		philosopher->sim->sim_on_off = 0;
+		release_all_forks(philosopher->sim);
 		pthread_mutex_unlock(&philosopher->sim->sim_mutex[OFF]);
 		pthread_mutex_unlock(&philosopher->sim->sim_mutex[MEALS]);
 		return (0);
@@ -116,7 +117,21 @@ void	*eat_prey_love_odd(void *arg)
 		}
 		else
 		{
-			usleep(500);
+			//2025-01-27 ajout de * nb_philos % 3
+			//printf("id: %d\n", ptr->id); 
+			usleep(2000 * (ptr->sim->nb_philos / 3));
+			/*
+			if (ptr->id == 1)
+			{
+				if (ptr->sim->nb_philos % 2 == 0)
+				{
+					while (ptr->sim->philosopher[ptr->sim->nb_philos].left_hand == 0)
+					{
+						usleep(1);
+					}
+				}
+			}
+			*/	
 			think(ptr);
 		}
 		eat_prey_love(ptr);
