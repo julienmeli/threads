@@ -49,10 +49,7 @@ int	main(int argc, char **argv)
 		return (1);
         }
 	ft_init_simulation(&sim, argc, argv);
-	//printf("After initialization:%d\n", sim.nb_philos);
 	ft_run_simulation(&sim);
-	//puts("Here, already?");
 	ft_clean_simulation(&sim);
-	//free(sim);
 	return (0);
 }

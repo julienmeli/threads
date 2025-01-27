@@ -70,12 +70,10 @@ void	*eat_prey_love(void *arg)
 	t_philosopher	*ptr;
 
 	ptr = (t_philosopher *)arg;
-	//puts("check eat prey love");
 	//printf("check_meals%d check_hunger%d\n", check_meals(ptr), check_hunger(ptr));
 	while (check_meals(ptr) && check_hunger(ptr) && ptr->sim->sim_on_off == 1)
 	{
 		//printf("Before take_forks %d\n", ptr->id);
-		//doublecheck(ptr);
 		if (simonoff(ptr) == 0)
 			break;
 		take_forks(ptr);
@@ -110,7 +108,7 @@ void	*eat_prey_love_odd(void *arg)
 	{
 		if (simonoff(ptr) == 0)
 			break;
-		if (ptr->id == ptr->sim->nb_philos)
+		if ((ptr->id == ptr->sim->nb_philos) && (ptr->sim->nb_philos > 1))
 		{
 			nap(ptr);
 			think(ptr);
@@ -119,7 +117,7 @@ void	*eat_prey_love_odd(void *arg)
 		{
 			//2025-01-27 ajout de * nb_philos % 3
 			//printf("id: %d\n", ptr->id); 
-			usleep(2000 * (ptr->sim->nb_philos / 3));
+			usleep(2000 * (1 + (ptr->sim->nb_philos / 3)));
 			/*
 			if (ptr->id == 1)
 			{

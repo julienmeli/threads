@@ -26,6 +26,26 @@ int	check_left_fork(t_philosopher *philo)
 		return (1);
 }
 
+void	solo_philo(t_philosopher *philo)
+{
+	struct timeval	current_time;
+	long int	fork_time;
+	
+	//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
+        usleep(philo->sim->time_to_die * 1000);
+        //pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
+        gettimeofday(&current_time, NULL);
+        fork_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+        fork_time = fork_time - philo->sim->start_time;
+        ft_log(fork_time, philo, "died.");
+        pthread_mutex_unlock(philo->right_fork);
+        //ft_clean_simulation(philo->sim);
+        pthread_mutex_lock(&philo->sim->sim_mutex[OFF]);
+        philo->sim->sim_on_off = 0;
+	release_all_forks(philo->sim);
+        pthread_mutex_unlock(&philo->sim->sim_mutex[OFF]);
+}
+
 void	take_forks(t_philosopher *philo)
 {
 	struct timeval	current_time;
@@ -43,6 +63,7 @@ void	take_forks(t_philosopher *philo)
 	ft_log(fork_time, philo, "has taken a fork.");
 	if (philo->sim->nb_philos == 1)
 	{
+		/*
 		//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
 		usleep(philo->sim->time_to_die * 1000);
 		//pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
@@ -56,6 +77,8 @@ void	take_forks(t_philosopher *philo)
 		philo->sim->sim_on_off = 0;
 		release_all_forks(philo->sim);
 		pthread_mutex_unlock(&philo->sim->sim_mutex[OFF]);
+		*/
+		solo_philo(philo);
 		return ;
 	}
 	while (!check_left_fork(philo))
@@ -164,7 +187,7 @@ void	nap(t_philosopher *philo)
 	sleep_time = sleep_time - philo->sim->start_time;
 	if (sudden_death(philo) || philo->sim->sim_on_off == 0)
                 return ;
-	usleep(1);
+	usleep(10);
 	ft_log(sleep_time, philo, " is sleeping.");
 	//death_becomes_her(philo);
 	//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
@@ -198,6 +221,7 @@ void	think(t_philosopher *philo)
 	if (sudden_death(philo) || philo->sim->sim_on_off == 0)
                 return ;
 	*/
+	usleep(10);
 	ft_log(think_time, philo, " is thinking.");
 	//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
         //usleep(philo->sim->time_to_sleep * 1000);
