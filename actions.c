@@ -163,13 +163,18 @@ void	nap(t_philosopher *philo)
 	ft_log(sleep_time, philo, " is sleeping.");
 	//death_becomes_her(philo);
 	//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
-	sand = 0;
-	while (sand <= philo->sim->time_to_sleep)
+	if ((philo->sim->time_to_die < (philo->sim->time_to_eat + philo->sim->time_to_sleep)) || (philo->sim->time_to_die < philo->sim->time_to_sleep))
 	{
-		usleep(1000);
-		sudden_death(philo);
-		sand = sand + 1;
+		sand = 0;
+		while (sand <= philo->sim->time_to_sleep)
+		{
+			usleep(1000);
+			sudden_death(philo);
+			sand = sand + 1;
+		}
 	}
+	else
+		usleep(philo->sim->time_to_sleep * 1000);
 	//pthread_mutex_unlock(&philo->sim->sim_mutex[TIME]);
 }
 
@@ -182,8 +187,10 @@ void	think(t_philosopher *philo)
         think_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 	//printf("think_time: %ld start_time: %ld\n", think_time, philo->sim->start_time);
 	think_time = think_time - philo->sim->start_time;
+	/*
 	if (sudden_death(philo) || philo->sim->sim_on_off == 0)
                 return ;
+	*/
 	ft_log(think_time, philo, " is thinking.");
 	//pthread_mutex_lock(&philo->sim->sim_mutex[TIME]);
         //usleep(philo->sim->time_to_sleep * 1000);

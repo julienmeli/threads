@@ -109,7 +109,16 @@ void	*eat_prey_love_odd(void *arg)
 	{
 		if (simonoff(ptr) == 0)
 			break;
-		nap(ptr);
+		if (ptr->id == ptr->sim->nb_philos)
+		{
+			nap(ptr);
+			think(ptr);
+		}
+		else
+		{
+			usleep(500);
+			think(ptr);
+		}
 		eat_prey_love(ptr);
 	}
 	return (NULL);
