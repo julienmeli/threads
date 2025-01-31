@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmeli <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:08:40 by jmeli             #+#    #+#             */
-/*   Updated: 2025/01/22 14:41:30 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/01/30 13:14:19 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	clean_mutexes(t_simulation *sim, int	index)
+void	clean_mutexes(t_simulation *sim, int index)
 {
 	int	i;
 
@@ -50,10 +50,8 @@ void	init_philo_mutex(t_simulation *sim)
 	ret = 0;
 	i = 0;
 	sim->philo_mutex = malloc(sim->nb_philos * sizeof(pthread_mutex_t));
-	//printf("Beginning of init_philo_mutex i:%d, nb of philos: %d\n", i, sim->nb_philos);
 	while (i < sim->nb_philos)
 	{
-		
 		ret = pthread_mutex_init(&sim->philo_mutex[i], NULL);
 		if (ret != 0)
 		{
@@ -64,7 +62,7 @@ void	init_philo_mutex(t_simulation *sim)
 				pthread_mutex_destroy(&sim->philo_mutex[j]);
 				j++;
 			}
-                        exit(1);
+			exit(1);
 		}
 		i++;
 	}
@@ -77,8 +75,7 @@ void	init_philosophers(t_simulation *sim)
 	sim->philosopher = malloc(sim->nb_philos * sizeof(t_philosopher));
 	if (!sim->philosopher)
 	{
-		printf("Philosopher memory allocation failed.\n");
-		ft_clean_simulation(sim);
+		error_message(sim);
 		return ;
 	}
 	i = 0;
@@ -92,7 +89,8 @@ void	init_philosophers(t_simulation *sim)
 		sim->philosopher[i].right_hand = 0;
 		sim->philosopher[i].left_fork = &sim->philo_mutex[i];
 		if (i == 0)
-			sim->philosopher[i].right_fork = &sim->philo_mutex[sim->nb_philos - 1];
+			sim->philosopher[i].right_fork = &sim->philo_mutex[sim->nb_philos
+				- 1];
 		else
 			sim->philosopher[i].right_fork = &sim->philo_mutex[i - 1];
 		i++;
@@ -102,7 +100,7 @@ void	init_philosophers(t_simulation *sim)
 void	ft_init_simulation(t_simulation *sim, int argc, char **argv)
 {
 	struct timeval	initial_time;
-	
+
 	(void)argc;
 	sim->nb_philos = ft_atoi(argv[1]);
 	sim->time_to_die = ft_atoi(argv[2]);

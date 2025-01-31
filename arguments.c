@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmeli <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:30:42 by jmeli             #+#    #+#             */
-/*   Updated: 2025/01/22 12:18:15 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/01/30 13:07:37 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	ft_atoi(char *str)
 
 int	ft_is_digit(char c)
 {
-	if ( c >= '0' && c <= '9')
+	if (c >= '0' && c <= '9')
 		return (1);
 	else
 		return (0);
@@ -75,17 +75,12 @@ int	ft_arguments(int argc, char **argv)
 	}
 	else
 		return (0);
-	//puts("chekeiros");
 	if (ft_atoi(argv[1]) == 0)
 	{
 		return (0);
 	}
 	else if (argv[5] && ft_atoi(argv[5]) == 0)
-	{
 		return (0);
-	}
 	else
-	{
 		return (1);
-	}
 }

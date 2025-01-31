@@ -6,7 +6,7 @@ OBJDIR = $(SRCDIR)
 SRC = actions.c\
       arguments.c\
       diary.c\
-      error.c\
+      utils.c\
       initialization.c\
       main.c\
       running.c
