@@ -6,7 +6,7 @@
 /*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 10:21:28 by jmeli             #+#    #+#             */
-/*   Updated: 2025/01/30 13:04:37 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/01/31 13:21:07 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	take_forks(t_philosopher *philo)
 {
-	long int		fork_time;
+	long int	fork_time;
 
 	pthread_mutex_lock(philo->right_fork);
 	philo->right_hand = 1;
@@ -83,8 +83,8 @@ void	release_forks(t_philosopher *philo)
 
 void	nap(t_philosopher *philo)
 {
-	long int		sleep_time;
-	int				sand;
+	long int	sleep_time;
+	int			sand;
 
 	sleep_time = ft_fork_time(philo);
 	if (sudden_death(philo) || philo->sim->sim_on_off == 0)
@@ -112,10 +112,24 @@ void	think(t_philosopher *philo)
 {
 	struct timeval	current_time;
 	long int		think_time;
+	int				sand;
 
 	gettimeofday(&current_time, NULL);
 	think_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 	think_time = think_time - philo->sim->start_time;
 	usleep(10);
+	if ((philo->sim->time_to_die < (philo->sim->time_to_eat * 2
+				+ philo->sim->time_to_sleep))
+		|| (philo->sim->time_to_die < philo->sim->time_to_sleep))
+	{
+		sand = 0;
+		while (sand <= philo->sim->time_to_eat)
+		{
+			usleep(1000);
+			if (sudden_death(philo))
+				break ;
+			sand = sand + 1;
+		}
+	}
 	ft_log(think_time, philo, " is thinking.");
 }
