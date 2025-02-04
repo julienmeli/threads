@@ -6,7 +6,7 @@
 /*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:09:02 by jmeli             #+#    #+#             */
-/*   Updated: 2025/01/30 13:22:33 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/02/04 10:54:02 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	main(int argc, char **argv)
 	}
 	ft_init_simulation(&sim, argc, argv);
 	ft_run_simulation(&sim);
+	clean_mutex_meals(&sim, sim.nb_philos);
 	ft_clean_simulation(&sim);
 	return (0);
 }

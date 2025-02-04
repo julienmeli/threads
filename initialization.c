@@ -6,7 +6,7 @@
 /*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:08:40 by jmeli             #+#    #+#             */
-/*   Updated: 2025/01/30 13:14:19 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/02/04 10:53:56 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,11 @@ void	init_philosophers(t_simulation *sim)
 		sim->philosopher[i].time_of_last_meal = 0 * sim->start_time;
 		sim->philosopher[i].left_hand = 0;
 		sim->philosopher[i].right_hand = 0;
-		sim->philosopher[i].left_fork = &sim->philo_mutex[i];
-		if (i == 0)
-			sim->philosopher[i].right_fork = &sim->philo_mutex[sim->nb_philos
-				- 1];
-		else
-			sim->philosopher[i].right_fork = &sim->philo_mutex[i - 1];
+		if (pthread_mutex_init(&sim->philosopher[i].meal, NULL) != 0)
+		{
+			clean_all(sim, i);
+			exit(1);
+		}
 		i++;
 	}
 }
