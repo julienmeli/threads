@@ -9,6 +9,7 @@ SRC = actions.c\
       utils.c\
       initialization.c\
       main.c\
+      process.c\
       running.c
 OBJ = $(SRC:.c=.o)
 OBJS = $(addprefix $(OBJDIR)/, $(OBJ))
