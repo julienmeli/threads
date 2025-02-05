@@ -6,7 +6,7 @@
 /*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 13:23:31 by jmeli             #+#    #+#             */
-/*   Updated: 2025/02/04 11:50:55 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/02/05 11:05:11 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void					ft_log(long int time, t_philosopher *philo, char *str);
 // process.c
 void					clean_all(t_simulation *sim, int i);
 void					*function(void *arg);
+int						all_meals_eaten(t_simulation *sim);
 
 // initialization.c
 void					clean_mutexes(t_simulation *sim, int index);

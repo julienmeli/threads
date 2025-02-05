@@ -6,7 +6,7 @@
 /*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 10:21:28 by jmeli             #+#    #+#             */
-/*   Updated: 2025/02/04 11:41:56 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/02/05 11:50:03 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void	eat(t_philosopher *philo)
 	philo->time_of_last_meal = meal_time;
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&philo->meal);
+	if (all_meals_eaten(philo->sim))
+		return ;
 	if (simonoff(philo))
 	{
 		usleep(philo->sim->time_to_eat * 1000);
@@ -86,7 +88,9 @@ void	nap(t_philosopher *philo)
 	long int	sleep_time;
 
 	sleep_time = ft_fork_time(philo);
-	usleep(50);
+	usleep(100);
+	if (all_meals_eaten(philo->sim))
+		return ;
 	ft_log(sleep_time, philo, " is sleeping.");
 	usleep(philo->sim->time_to_sleep * 1000);
 }
@@ -99,6 +103,6 @@ void	think(t_philosopher *philo)
 	gettimeofday(&current_time, NULL);
 	think_time = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 	think_time = think_time - philo->sim->start_time;
-	usleep(10);
+	usleep(100);
 	ft_log(think_time, philo, " is thinking.");
 }

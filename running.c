@@ -6,7 +6,7 @@
 /*   By: jmeli <jmeli@student.42luxembourg.lu>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 10:15:04 by jmeli             #+#    #+#             */
-/*   Updated: 2025/02/04 10:55:22 by jmeli            ###   ########.fr       */
+/*   Updated: 2025/02/05 11:59:45 by jmeli            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,11 @@ void	*eat_prey_love(void *arg)
 		take_forks(ptr);
 		eat(ptr);
 		release_forks(ptr);
+		if (!simonoff(ptr))
+			break ;
 		nap(ptr);
+		if (!simonoff(ptr))
+			break ;
 		think(ptr);
 	}
 	return (NULL);
